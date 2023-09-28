@@ -35,7 +35,7 @@ const makeRequest = async (image, prompt) => {
 const transformRoom = catchAsync(async (req, res, next) => {
   let { room, themes, image } = req.body;
 
-  console.log(room , themes, image)
+  console.log(room, themes, image)
 
   if (typeof themes === "string") themes = JSON.parse(themes);
 
@@ -50,12 +50,19 @@ const transformRoom = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne(query);
 
-  // if (!user || user.subscription.credits < themes.length) {
-  //   return next(new AppError("User not eligible to perform this action", 400));
-  // }
 
-   await User.findByIdAndUpdate(user._id, update);
-  
+  if (user.subscription.status == "trial") {
+    if (user.subscription.credits <= 0) {
+      return res.status(401).json({
+        status: "false",
+        message: "Insufficent Credits",
+      });
+      return;
+    } else {
+      await User.findByIdAndUpdate(user._id, update);
+    }
+  }
+
 
   const responses = [];
   const updatedUser = await User.findOne(query);
@@ -65,7 +72,6 @@ const transformRoom = catchAsync(async (req, res, next) => {
     try {
       const result = await makeRequest(image, prompt);
       responses.push(result);
-      console.log(responses)
     } catch (error) {
       console.log(error)
     }
@@ -75,7 +81,7 @@ const transformRoom = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    result: {filteredResponses, updatedUser},
+    result: { filteredResponses, updatedUser },
   });
 });
 
