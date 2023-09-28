@@ -55,9 +55,8 @@ const transformRoom = catchAsync(async (req, res, next) => {
     if (user.subscription.credits <= 0) {
       return res.status(401).json({
         status: "false",
-        message: "Insufficent Credits",
+        result: { filteredResponses: "Insufficent Credits", updatedUser: user },
       });
-      return;
     } else {
       await User.findByIdAndUpdate(user._id, update);
     }
