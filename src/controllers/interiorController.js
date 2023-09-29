@@ -55,7 +55,7 @@ const transformRoom = catchAsync(async (req, res, next) => {
     if (user.subscription.credits <= 0) {
       return res.status(401).json({
         status: "false",
-        result: { filteredResponses: "Insufficent Credits", updatedUser: user },
+        result: { filteredResponses: "Insufficent Credits" },
       });
     } else {
       await User.findByIdAndUpdate(user._id, update);
@@ -77,7 +77,7 @@ const transformRoom = catchAsync(async (req, res, next) => {
   }
 
   const filteredResponses = responses.filter(response => response !== undefined);
-
+  console.log(filteredResponses)
   res.status(200).json({
     status: "success",
     result: { filteredResponses, updatedUser },
