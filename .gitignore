@@ -1,0 +1,46 @@
+
+# Ignore modules and dependencies
+/node_modules
+/bower_components
+
+# Ignore package-lock files for Node.js projects
+package-lock.json
+yarn.lock
+
+# Ignore virtual environments and their files for Python projects
+venv/
+env/
+__pycache__/
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore compiled binaries or build artifacts
+/build/
+/dist/
+/out/
+/bin/
+/*.exe
+/*.dll
+/*.so
+/*.dylib
+
+# Ignore log files
+*.log
+
+# Ignore user-specific files and settings
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore database files
+*.db
+*.sqlite
+
+# Ignore sensitive or private information
+secrets.json
+config.yml
