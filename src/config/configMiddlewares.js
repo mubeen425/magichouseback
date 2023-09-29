@@ -7,7 +7,7 @@ const dotenv = require("dotenv").config();
 module.exports = function (app) {
   const corsOptions = {
     origin: "https://magichouse.vercel.app",
-    // origin: "https://magichouse-three.vercel.app",
+    origin: "https://magichouse-three.vercel.app",
     origin: "*",
   };
 
