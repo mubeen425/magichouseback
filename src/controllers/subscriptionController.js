@@ -25,7 +25,7 @@ const makePayment = catchAsync(async (req, res) => {
         value: amount.toFixed(2),
       },
       description: "Payment For Unlimited credits",
-      redirectUrl: "https://magichouse.vercel.app/designing",
+      redirectUrl: "https://magicmyhouse.com/designing",
       webhookUrl: process.env.WEBHOOK_URL,
       metadata: {
         userId: req.user.id,
@@ -39,7 +39,7 @@ const makePayment = catchAsync(async (req, res) => {
       url: "https://api.mollie.com/v2/payments",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer test_peA2sPzJWKkUHF7y54asBeMtSFKANS",
+        Authorization: "Bearer live_xDnhUCfjMUjRVJ3e9gmW29sGJwuMwJ",
       },
       data: data,
     };
