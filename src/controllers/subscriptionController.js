@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { createMollieClient } = require("@mollie/api-client");
 const AppError = require("../utils/appError");
 const mollieClient = createMollieClient({
-  apiKey: "test_peA2sPzJWKkUHF7y54asBeMtSFKANS",
+  apiKey: "live_xDnhUCfjMUjRVJ3e9gmW29sGJwuMwJ",
 });
 
 const makePayment = catchAsync(async (req, res) => {
