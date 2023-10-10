@@ -7,7 +7,7 @@ const mollieClient = createMollieClient({
   apiKey: "live_xDnhUCfjMUjRVJ3e9gmW29sGJwuMwJ",
 });
 
-const makePayment = catchAsync(async (req, res) => {
+const makePayment = catchAsync(async (req, res,next) => {
   const { amount } = req.body;
 
   console.log(amount, req.user);
@@ -61,7 +61,7 @@ function getExpiryDate(month) {
   const oneMonthExpiration = new Date(currentDate);
   return oneMonthExpiration.setMonth(currentDate.getMonth() + month);
 }
-const paymentConfirmationHook = catchAsync(async (req, res) => {
+const paymentConfirmationHook = catchAsync(async (req, res,next) => {
   const { id } = req.body;
 
   const payment = await mollieClient.payments.get(id);
