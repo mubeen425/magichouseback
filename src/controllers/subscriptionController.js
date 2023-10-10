@@ -63,12 +63,13 @@ function getExpiryDate(month) {
 }
 const paymentConfirmationHook = catchAsync(async (req, res,next) => {
   const { id } = req.body;
-
+console.log("webhook",id)
   const payment = await mollieClient.payments.get(id);
   if (!payment)
     return next(new AppError("No payment was found with this id", 200));
-
+    console.log("webhook",payment)
   if (payment.status === "paid") {
+ 
     const paymentAmount = payment.amount.value;
     const months = payment.metadata.months;
     const userId = payment.metadata.userId;
