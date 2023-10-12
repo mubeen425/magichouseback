@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { createMollieClient } = require("@mollie/api-client");
 const AppError = require("../utils/appError");
 const mollieClient = createMollieClient({
-  apiKey: "live_xDnhUCfjMUjRVJ3e9gmW29sGJwuMwJ",
+  apiKey: "test_bNw3MPkxxBM8AF7hafE6n6eaBnd3xK",
 });
 
 const makePayment = catchAsync(async (req, res,next) => {
@@ -39,7 +39,7 @@ const makePayment = catchAsync(async (req, res,next) => {
       url: "https://api.mollie.com/v2/payments",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer live_xDnhUCfjMUjRVJ3e9gmW29sGJwuMwJ",
+        Authorization: "Bearer test_bNw3MPkxxBM8AF7hafE6n6eaBnd3xK",
       },
       data: data,
     };
