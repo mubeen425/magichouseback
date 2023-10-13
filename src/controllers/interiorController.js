@@ -40,23 +40,19 @@ const transformRoom = catchAsync(async (req, res, next) => {
   if (typeof themes === "string") themes = JSON.parse(themes);
 
   const query = {
-    _id: req.user.id,
-    "subscription.status": "trial",
+    _id: req.user.id
   };
-
+console.log(themes.length);
   const update = {
     $inc: { "subscription.credits": -themes.length },
   };
 
   const user = await User.findOne(query);
 
-
-  if (user.subscription.status == "trial") {
+  if (user.subscription.status!=="active") {
     if (user.subscription.credits <= 0) {
-      return res.status(401).json({
-        status: "false",
-        result: { filteredResponses: "Insufficent Credits" },
-      });
+      return next(new AppError("Insufficent Credits", 401));
+  
     } else {
       await User.findByIdAndUpdate(user._id, update);
     }
