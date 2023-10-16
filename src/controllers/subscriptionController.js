@@ -3,7 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const User = require("../models/User");
 const { createMollieClient } = require("@mollie/api-client");
 const AppError = require("../utils/appError");
-let key="test_peA2sPzJWKkUHF7y54asBeMtSFKANS"
+let key="live_xDnhUCfjMUjRVJ3e9gmW29sGJwuMwJ"
 const mollieClient = createMollieClient({
   apiKey: key,
 });
