@@ -6,6 +6,7 @@ const catchAsync = require("../utils/catchAsync");
 const crypto = require("crypto");
 //const sendEmail = require("./../utils/email");
 const { getAsBool } = require("../utils/helpers");
+
 // const CreatedByHandler = (req, res, next) => {
 //   req.body.created_by = req.user.id
 //   next();
@@ -13,6 +14,10 @@ const { getAsBool } = require("../utils/helpers");
 // const CreatedByHandler =  catchAsync(async (req, res, next) => {
 //   next();
 // })
+
+const ADMIN_EMAIL = "admin@example.com"; // Replace with your admin email
+const ADMIN_PASSWORD = "adminPassword"; // Replace with your admin password
+
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -20,7 +25,7 @@ const signToken = (id) => {
 };
 
 const createSendToken = (user, statusCode, res) => {
-  user = user.toObject()
+  user = user.toObject();
   const excludedFields = ["password", "passwordChangedAt"];
   excludedFields.forEach((el) => delete user[el]);
   const token = signToken(user._id);
@@ -37,12 +42,13 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
-    data: user
+    data: user,
   });
 };
 function generateRandomString(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
 
   for (let i = 0; i < length; i++) {
@@ -53,12 +59,10 @@ function generateRandomString(length) {
   return result;
 }
 
-
 const googleLogin = catchAsync(async (req, res, next) => {
-
   const { googlePayload } = req.body;
   // Verify the token and extract user data
-  console.log(googlePayload)
+  console.log(googlePayload);
   // Check if the user already exists in your database
   const existingUser = await User.findOne({ googleId: googlePayload.sub });
   console.log(generateRandomString(8), "empty");
@@ -71,16 +75,35 @@ const googleLogin = catchAsync(async (req, res, next) => {
       profile: googlePayload.picture,
       email: googlePayload.email,
       username: googlePayload.email,
-      password: generateRandomString(8)
+      password: generateRandomString(8),
     });
 
     await newUser.save();
 
     createSendToken(newUser, 201, res);
   }
+});
 
-
-})
+// Define a function for getting all users
+const getAllUsers = async (req, res) => {
+  try {
+    // Fetch all users from your database
+    const users = await User.find();
+    console.log(users);
+    // Send the list of users as a response
+    res.status(200).json({
+      status: "success",
+      data: {
+        users,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve users.",
+    });
+  }
+};
 
 const registerUser = catchAsync(async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -91,14 +114,15 @@ const registerUser = catchAsync(async (req, res, next) => {
 
   if (existingUser) {
     if (existingUser.googleId)
-      return next(new AppError("Previously you logged in with another method", 400));
+      return next(
+        new AppError("Previously you logged in with another method", 400)
+      );
     if (existingUser.email === email) {
       return next(new AppError("Email already exists", 400));
     } else {
       return next(new AppError("Username already exists", 400));
     }
   }
-
 
   const newUser = await User.create({
     username,
@@ -112,16 +136,16 @@ const registerUser = catchAsync(async (req, res, next) => {
 const loginUser = catchAsync(async (req, res, next) => {
   const { identifier, password } = req.body;
 
-
   // 1) Check if email and password exist
   if (!identifier || !password) {
-    return next(new AppError("Please provide username/email and password!", 400));
+    return next(
+      new AppError("Please provide username/email and password!", 400)
+    );
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({
     $or: [{ username: identifier }, { email: identifier }],
-  }).select('+password');
-
+  }).select("+password");
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
@@ -304,7 +328,31 @@ const deleteTechinician = async (req, res) => {
   }
 };
 
+const createSendTokenAdmin = (statusCode, res) => {
+  // Generate a JWT token for the admin
+  const token = signToken(1); // You can set the admin's user ID here
+
+  res.status(statusCode).json({
+    status: "success",
+    token,
+  });
+};
+
+const loginAdmin = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Check if the provided credentials match the hardcoded admin credentials
+  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    return next(new AppError("Incorrect email or password", 401));
+  }
+
+  // Send a JWT token to the admin
+  createSendTokenAdmin(200, res);
+});
+
 module.exports = {
+  loginAdmin,
+  getAllUsers,
   registerUser,
   googleLogin,
   loginUser,
